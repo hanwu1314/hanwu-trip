@@ -7,4 +7,4 @@ import TabBar from '@/components/tab-bar/tab-bar.vue'
     <TabBar />
   </div>
 </template>
-<style lang='less' scoped></style>
+<!-- <style lang='less' scoped></style> -->
