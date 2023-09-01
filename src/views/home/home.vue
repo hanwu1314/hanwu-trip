@@ -1,5 +1,6 @@
 <script setup>
 import HomeNavBar from './components/home-nav-bar.vue'
+import HomeSearcBox from './components/home-search-box.vue'
 </script>
 <template>
     <div class="home">
@@ -7,6 +8,7 @@ import HomeNavBar from './components/home-nav-bar.vue'
         <div class="banner">
             <img src="@/assets/img/home/banner.webp" alt="">
         </div>
+        <HomeSearcBox />
     </div>
 </template>
 <style lang='less' scoped>
