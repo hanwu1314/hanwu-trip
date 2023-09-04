@@ -2,7 +2,8 @@
 import { useRouter } from 'vue-router';
 import { ref } from 'vue'
 // import useCityStore from '@/stores/modules/city';
-import { getCityAll } from "@/services"
+import useCityStore from '@/stores/modules/city';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter()
 /**tab标签 */
@@ -13,14 +14,10 @@ const searchValue = ref("")
 const cancelClick = () => {
     router.back()
 }
-/**网络请求：请求城市的数据 */
-const allCities = ref({})
-
-// 获取城市数据
-getCityAll().then(res => {
-    allCities.value = res.data
-})
-
+/**城市Store */
+const cityStore = useCityStore()
+cityStore.fetchAllCitiesData()
+const { allCities } = storeToRefs(cityStore)
 
 
 
