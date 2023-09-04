@@ -1,5 +1,6 @@
-:root {
+:root:root {
     --primary-color: #ff9854;
+    --van-search-left-icon-color: var(--primary-color);
 }
 
 body {
