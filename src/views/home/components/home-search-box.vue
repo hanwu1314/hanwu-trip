@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import useCityStore from '@/stores/modules/city';
+import useHomeStore from '@/stores/modules/home'
 import { storeToRefs } from 'pinia';
 import { formatMonthDay, getDiffDays } from "@/utils/format_date"
 import { ref } from 'vue'
@@ -44,8 +45,10 @@ const onConfirm = (value) => {
     // 2.隐藏日历
     showCalendar.value = false
 }
-
-
+/**首页Store */
+const homeStore = useHomeStore()
+/**热门建议 */
+const { hotSuggests } = storeToRefs(homeStore)
 
 </script>
 <template>
@@ -85,6 +88,14 @@ const onConfirm = (value) => {
         <!-- 关键字 -->
         <div class="section keyword bottom-gray-line">关键字/位置/民宿名</div>
 
+        <!-- 热门建议 -->
+        <div class="section hot-suggests">
+            <template v-for="(item, index) in hotSuggests" :key="index">
+                <div class="item" :style="{ color: item.tagText.color, background: item.tagText.background.color }">
+                    {{ item.tagText.text }}
+                </div>
+            </template>
+        </div>
     </div>
 </template>
 <style lang='less' scoped>
@@ -176,6 +187,15 @@ const onConfirm = (value) => {
 .price-counter {
     .start {
         border-right: 1px solid var(--line-color);
+    }
+}
+
+.hot-suggests {
+    .item {
+        padding: 4px 8px;
+        border-radius: 14px;
+        margin: 5px 3px;
+        font-size: 12px;
     }
 }
 </style>
