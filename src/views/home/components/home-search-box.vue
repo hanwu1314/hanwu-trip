@@ -2,6 +2,8 @@
 import { useRouter } from 'vue-router'
 import useCityStore from '@/stores/modules/city';
 import { storeToRefs } from 'pinia';
+import { formatMonthDay, getDiffDays } from "@/utils/format_date"
+import { ref } from 'vue'
 const router = useRouter()
 
 const cityClick = () => {
@@ -19,12 +21,36 @@ const positionClick = () => {
 const cityStore = useCityStore()
 const { currentCity } = storeToRefs(cityStore)
 
+// 日期范围的处理
+const nowDate = new Date()
+const newDate = new Date()
+// 下一天
+newDate.setDate(nowDate.getDate() + 1)
+/**开始日期 */
+const startDate = ref(formatMonthDay(nowDate))
+/**结束日期 */
+const endDate = ref(formatMonthDay(newDate))
+/**停留天数 */
+const stayCount = ref(getDiffDays(nowDate, newDate))
+
+const showCalendar = ref(false)
+const onConfirm = (value) => {
+    // 1.设置日期
+    const selectStartDate = value[0]
+    const selectEndDate = value[1]
+    startDate.value = formatMonthDay(selectStartDate)
+    endDate.value = formatMonthDay(selectEndDate)
+    stayCount.value = getDiffDays(selectStartDate, selectEndDate)
+    // 2.隐藏日历
+    showCalendar.value = false
+}
 
 
 
 </script>
 <template>
     <div class="search-box">
+        <!-- 位置信息 -->
         <div class="location">
             <div class="city" @click="cityClick">{{ currentCity.cityName }}</div>
             <div class="position" @click="positionClick">
@@ -32,35 +58,109 @@ const { currentCity } = storeToRefs(cityStore)
                 <img src="@/assets/img/home/icon_location.png" alt="">
             </div>
         </div>
+        <!-- 日期范围 -->
+        <div class="section date-range bottom-gray-line " @click="showCalendar = true">
+            <div class="start">
+                <div class="date">
+                    <span class="tip">入住</span>
+                    <span class="time">{{ startDate }}</span>
+                </div>
+                <div class="stay">共{{ stayCount }}晚</div>
+            </div>
+            <div class="end">
+                <div class="date">
+                    <span class="tip">离店</span>
+                    <span class="time">{{ endDate }}</span>
+                </div>
+            </div>
+        </div>
+        <van-calendar v-model:show="showCalendar" type="range" color="#ff9854" :round="false" :show-confirm="false"
+            @confirm="onConfirm" />
     </div>
 </template>
 <style lang='less' scoped>
 .search-box {
-    .location {
+    --van-calendar-popup-height: 100%;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px;
+
+    .city {
+        flex: 1;
+        color: #333;
+        font-size: 15px;
+    }
+
+    .position {
+        width: 74px;
         display: flex;
         align-items: center;
+
+        .text {
+            position: relative;
+            top: 2px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        img {
+            margin-left: 5px;
+            width: 18px;
+            height: 18px;
+        }
+    }
+}
+
+.section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0 20px;
+    color: #999;
+    height: 44px;
+
+    .start {
+        flex: 1;
+        display: flex;
         height: 44px;
+        align-items: center;
+    }
 
-        padding: 0 20px;
+    .end {
+        min-width: 30%;
+        padding-left: 20px;
+    }
 
-        .city {
-            flex: 1;
+    .date {
+        display: flex;
+        flex-direction: column;
+
+        .tip {
+            font-size: 12px;
+            color: #999;
         }
 
-        .position {
-            width: 74px;
-
-            .text {
-                font-size: 12px;
-
-            }
-
-            img {
-                margin-left: 5px;
-                width: 18px;
-                height: 18px;
-            }
+        .time {
+            margin-top: 3px;
+            color: #333;
+            font-size: 15px;
+            font-weight: 500;
         }
+    }
+}
+
+.date-range {
+    height: 44px;
+
+    .stay {
+        flex: 1;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
     }
 }
 </style>
