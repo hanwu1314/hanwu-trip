@@ -1,18 +1,22 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue';
+import { throttle } from 'lodash'
 
-// 监听window创建的滚动
 export default function useScroll() {
     const isReachBottom = ref(false)
 
-    const scrollListenerHandler = () => {
-        const clientHeight = document.documentElement.clientHeight;
-        const scrollTop = document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight;
-        console.log(clientHeight, Math.round(scrollTop), scrollHeight);
-        if (clientHeight + Math.round(scrollTop) >= scrollHeight) {
+    const clientHeight = ref(0)
+    const scrollTop = ref(0)
+    const scrollHeight = ref(0)
+
+    // 节流
+    const scrollListenerHandler = throttle(() => {
+        clientHeight.value = document.documentElement.clientHeight
+        scrollTop.value = document.documentElement.scrollTop
+        scrollHeight.value = document.documentElement.scrollHeight
+        if (clientHeight.value + scrollTop.value >= scrollHeight.value) {
             isReachBottom.value = true
         }
-    }
+    }, 100)
 
     onMounted(() => {
         window.addEventListener("scroll", scrollListenerHandler)
@@ -22,5 +26,5 @@ export default function useScroll() {
         window.removeEventListener("scroll", scrollListenerHandler)
     })
 
-    return { isReachBottom }
+    return { isReachBottom, clientHeight, scrollTop, scrollHeight }
 }
