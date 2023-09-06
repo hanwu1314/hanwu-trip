@@ -16,17 +16,20 @@ const { houselist } = storeToRefs(homeStore)
                     <house-item-v9 v-if="item.discoveryContentType === 9" :item-data="item.data" />
                     <house-item-v3 v-else-if="item.discoveryContentType === 3" :item-data="item.data" />
                 </template>
+                <div v-if="homeStore.noMoreData" class="noMore">
+                    -- 没有更多了 --
+                </div>
             </div>
         </div>
     </div>
+    <!-- .content-bottom 类名放在这里，表示列表底部 -->
+    <div class="content-bottom"></div>
 </template>
 <style lang='less' scoped>
 .content {
     padding: 10px 8px;
 
     .title {
-        // font-size: 22px;
-        // padding: 10px;
         font-family: PingFangSC-Medium;
         font-size: 18px;
         color: #333;
@@ -45,5 +48,12 @@ const { houselist } = storeToRefs(homeStore)
 .list {
     display: flex;
     flex-wrap: wrap;
+}
+
+.noMore {
+    text-align: center;
+    width: 100%;
+    margin: 20px 0;
+    color: #999;
 }
 </style>
