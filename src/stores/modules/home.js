@@ -5,16 +5,24 @@ const useHomeStore = defineStore("home", {
     state: () => ({
         hotSuggests: [],
         categories: [],
-        houselist: []
+        currentPage: 1,
+        houselist: [],
+        noMoreData: false
     }),
     actions: {
         async fetchHotSuggestData() {
             const res = await getHomeHotSuggests()
             this.hotSuggests = res.data
         },
-        async fetchHomeHouselist(currentPage) {
-            const res = await getHomeHouselist(currentPage)
-            this.houselist.push(...res.data)
+        async fetchHomeHouselist() {
+            try {
+                const res = await getHomeHouselist(this.currentPage);
+                this.houselist.push(...res.data)
+                this.currentPage++
+            } catch (error) {
+                this.noMoreData = true
+            }
+
         }
     }
 })

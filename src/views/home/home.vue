@@ -1,21 +1,24 @@
 <script setup>
+import { watch } from 'vue';
 import HomeNavBar from './components/home-nav-bar.vue'
 import HomeSearcBox from './components/home-search-box.vue'
 import HomeContent from './components/home-content.vue'
 import useHomeStore from '@/stores/modules/home';
+import useScroll from '@/hooks/useScroll'
+import useNewScroll from '@/hooks/useNewScroll'
 
 const homeStore = useHomeStore()
 homeStore.fetchHotSuggestData()
 homeStore.fetchHomeHouselist()
 
-let currentPage = 1;
-
-const moreBtnClick = () => {
-    console.log("加载更多的数据")
-    currentPage++
-    homeStore.fetchHomeHouselist(currentPage)
-}
-
+const { isReachBottom } = useNewScroll()
+watch(isReachBottom, (newValue) => {
+    if (newValue) {
+        homeStore.fetchHomeHouselist().then(() => {
+            isReachBottom.value = false;
+        })
+    }
+})
 </script>
 <template>
     <div class="home">
@@ -25,7 +28,6 @@ const moreBtnClick = () => {
         </div>
         <HomeSearcBox />
         <HomeContent />
-        <button @click="moreBtnClick">加载更多</button>
     </div>
 </template>
 <style lang='less' scoped>
