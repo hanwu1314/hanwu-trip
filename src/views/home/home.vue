@@ -6,6 +6,8 @@ import HomeContent from './components/home-content.vue'
 import useHomeStore from '@/stores/modules/home';
 import useScroll from '@/hooks/useScroll'
 import useNewScroll from '@/hooks/useNewScroll'
+import useScroll from '@/hooks/useScroll'
+import useNewScroll from '@/hooks/useNewScroll'
 
 const homeStore = useHomeStore()
 homeStore.fetchHotSuggestData()
